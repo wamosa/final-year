@@ -1,14 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* Header Styles */
+header {
+    background-color: #3c4b64;
+    color: white;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 24px;
+}
+
+header nav {
+    float: right;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 16px;
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+
+/* Main Content */
+main {
+            flex: 1; /* This will take up remaining space in the page */
+            display: flex;
+            justify-content: center; /* Centering the form horizontally */
+            align-items: center; /* Centering the form vertically */
+            padding: 20px;
+            background-color: white;
+            margin-top: 20px;
+        }
+
+
+.patient-form h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px; /* Limiting the form width */
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 15px;
+    background-color: #3c4b64;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #57678b;
+}
+
+/* Footer */
+footer {
+    background-color: #f4f7fc;
+    padding: 10px 0;
+    text-align: center;
+    color: #555;
+    margin-top: 20px;
+}
+
+footer a {
+    color: #3c4b64;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+    </style>
 </head>
 <body>
-    <h2>Welcome, Doctor</h2>
-    <p>You can view patient information or predict their health status.</p>
-    <a href="{{ url_for('input_features') }}">Go to Input Features</a>
-    <br><br>
-    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <h1>Welcome, Doctor</h1>
+            <nav>
+                <a href="{{ url_for('generate_form') }}">Generate Patient Report</a>
+                <a href="{{ url_for('input_features') }}">Go to Input Features</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        <section class="patient-form">
+            <h2>Add New Patient</h2>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" id="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" name="age" id="age" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender:</label>
+                    <select name="gender" id="gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <button type="submit">Add Patient</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2024 Doctor Dashboard. All rights reserved.</p>
+        </div>
+    </footer>
+
 </body>
 </html>

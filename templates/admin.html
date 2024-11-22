@@ -4,26 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='search.js') }}"></script>
+    <style>
+        /* Base Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        h2, h3 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        /* Search Container */
+        .search-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            font-size: 24px;
+            color: #007bff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-icon:hover {
+            transform: scale(1.2);
+        }
+
+        .search-form {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s;
+        }
+
+        .search-form input {
+            width: 250px;
+            padding: 10px;
+            margin-right: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .search-form button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .search-form.active {
+            display: block;
+        }
+
+        /* Doctor List */
+        .content-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        ul li:last-child {
+            border-bottom: none;
+        }
+
+        ul li form button {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        ul li form button:hover {
+            background-color: #c82333;
+        }
+
+        /* Add Doctor Form */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        form input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        form button {
+            background-color: #257f9b;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color:  #257f9b;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .footer a {
+            color: #205bc9;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>Welcome, Admin</h2>
-    <p>Select a doctor to view their information.</p>
-    <a href="#">Doctor 1</a> | <a href="#">Doctor 2</a>
-    <br><br>
 
-    <h3>Add Doctor</h3>
-    <form action="{{ url_for('add_doctor') }}" method="POST">
-        <label for="name">Doctor's Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <label for="specialization">Specialization</label>
-        <input type="text" id="specialization" name="specialization" required> <!-- Ensure this is exactly 'specialization' -->
-        <br>
-        <button type="submit">Add Doctor</button>
-    </form>
-    <br>
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <div class="search-container">
+        <!-- Search icon -->
+        <i class="search-icon" id="searchIcon">&#128269;</i> <!-- Unicode for search icon -->
+        
+        <!-- Search form -->
+        <form id="searchForm" class="search-form" method="GET" action="{{ url_for('admin_dashboard') }}">
+            <input type="text" name="query" placeholder="Search doctor by name" 
+                   value="{{ request.args.get('query', '') }}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    
+
+    <div class="content-container">
+        <h3>Doctors List</h3>
+        <ul>
+            {% for doctor in doctors %}
+                <li>
+                    {{ doctor.name }} ({{ doctor.specialization }})
+                    <form action="{{ url_for('delete_doctor', doctor_id=doctor.id) }}" method="POST">
+                        <button type="submit">Remove</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>No doctors found.</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Add Doctor</h3>
+        <form action="{{ url_for('add_doctor') }}" method="POST">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="specialization" placeholder="Specialization" required>
+            <input type="number" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Add Doctor</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
 </body>
 </html>
-
